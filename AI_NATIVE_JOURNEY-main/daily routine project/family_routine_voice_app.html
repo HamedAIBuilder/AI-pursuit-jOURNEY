@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Routine Voice App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+        .app-container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+            padding: 0 0 20px 0;
+        }
+        .app-header {
+            background: #667eea;
+            color: white;
+            border-radius: 18px 18px 0 0;
+            padding: 24px 0 18px 0;
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .calendar-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f7f7fb;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 0 8px 0;
+        }
+        .calendar-bar label {
+            font-size: 1rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+        .calendar-bar input[type="date"] {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            font-size: 1rem;
+        }
+        .add-task-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .add-task-btn:hover {
+            background: #5a67d8;
+        }
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #f7f7fb;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 0;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .nav-btn.active, .nav-btn:hover {
+            background: #e6eaff;
+        }
+        .section {
+            display: none;
+            padding: 18px 24px 0 24px;
+        }
+        .section.active {
+            display: block;
+        }
+        .family-members {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .member {
+            text-align: center;
+            flex: 1;
+        }
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 4px auto;
+        }
+        .member-name {
+            font-size: 0.9rem;
+            color: #2d3748;
+        }
+        .routine-list {
+            margin-bottom: 0;
+        }
+        .routine-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .routine-item:last-child {
+            border-bottom: none;
+        }
+        .routine-time {
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 10px;
+            min-width: 50px;
+            text-align: center;
+        }
+        .routine-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+        .routine-status {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        .routine-status.completed {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+        .edit-btn {
+            background: #e2e8f0;
+            color: #667eea;
+            border: none;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .edit-btn:hover {
+            background: #d6dbf5;
+        }
+        .activity-list {
+            margin-bottom: 0;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .activity-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .activity-details {
+            font-size: 0.95rem;
+            color: #2d3748;
+        }
+        .activity-progress {
+            width: 60px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #667eea;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .quick-action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex: 1 1 45%;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        .quick-action-btn:hover {
+            background: #5a67d8;
+        }
+        .voice-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 18px 0 0 0;
+        }
+        .assistant-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-right: 10px;
+            box-shadow: 0 0 0 0 #48bb7840;
+            transition: box-shadow 0.3s;
+        }
+        .assistant-avatar.listening {
+            animation: pulse 1s infinite;
+            background: #48bb78;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 #48bb7840; }
+            70% { box-shadow: 0 0 0 10px #48bb7800; }
+            100% { box-shadow: 0 0 0 0 #48bb7840; }
+        }
+        .voice-status {
+            font-size: 1rem;
+            color: #667eea;
+            min-height: 24px;
+            flex: 1;
+        }
+        /* Modal Styles */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-bg.active {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 20px 18px 20px;
+            min-width: 280px;
+            max-width: 90vw;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        }
+        .modal h3 {
+            margin-top: 0;
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .modal label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .modal input[type="text"], .modal input[type="time"], .modal input[type="date"] {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1.5px solid #cbd5e0;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-btn.cancel {
+            background: #e2e8f0;
+            color: #667eea;
+        }
+        @media (max-width: 600px) {
+            .app-container {
+                max-width: 100vw;
+                border-radius: 0;
+                margin: 0;
+            }
+        }
+        .custom-map {
+            width: 100%;
+            min-height: 220px;
+            height: 32vw;
+            max-height: 340px;
+            margin: 24px 0 0 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+            border: 1.5px solid #e2e8f0;
+            background: #f7f7fb;
+            transition: box-shadow 0.2s;
+        }
+        @media (max-width: 600px) {
+            .custom-map {
+                height: 220px;
+                min-height: 160px;
+                max-height: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <span class="app-logo" style="font-size:2em;vertical-align:middle;margin-right:10px;">👨‍👩‍👦‍👦</span>
+            <i class="fas fa-home"></i> Family Routine
+        </div>
+        <div class="calendar-bar">
+            <label for="routineDate">Day:</label>
+            <input type="date" id="routineDate">
+            <button class="add-task-btn" id="addBtn" onclick="openTaskModal()"><i class="fas fa-plus"></i> Add Task</button>
+        </div>
+        <div class="nav-bar" id="navBar" style="display: flex; gap: 8px;">
+            <button class="nav-btn active" draggable="true" onclick="showSection('routine')" id="nav-routine">Routine</button>
+            <button class="nav-btn" draggable="true" onclick="showSection('activities')" id="nav-activities">Urgent Call</button>
+            <button class="nav-btn" draggable="true" onclick="showSection('stats')" id="nav-stats">Stats</button>
+            <button class="nav-btn" draggable="true" onclick="showSection('quick')" id="nav-quick">Quick</button>
+        </div>
+        <div class="section active" id="section-routine">
+            <div class="family-members" id="familyMembers">
+                <!-- Dynamic members will be rendered here -->
+            </div>
+            <button class="add-task-btn" id="addUserBtn" style="margin: 0 0 12px 0; width: 100%;"><i class="fas fa-user-plus"></i> Add User</button>
+            <div class="routine-list" id="routineList">
+                <!-- Routine items will be rendered here -->
+            </div>
+            <!-- Google Map below the task list -->
+            <!-- Removed Google Map -->
+        </div>
+        <div class="section" id="section-activities">
+            <div class="activity-list" id="activityList">
+                <!-- Urgent Calls will be rendered here -->
+            </div>
+            <!-- Add/Edit Urgent Call Modal Fields -->
+            <div id="activityFields" style="display:none;">
+                <input type="text" id="activityText" placeholder="Urgent Call Description">
+                <input type="text" id="activityNumber" placeholder="Phone Number (e.g., 3476860161)">
+                <input type="time" id="activityTime" placeholder="Time to Call">
+                <input type="range" id="activityProgress" min="0" max="100" value="0" style="display:none;">
+            </div>
+        </div>
+        <div class="section" id="section-stats">
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-number" id="statMembers">4</div>
+                    <div class="stat-label">Members</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="statTasks">4</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="statComplete">0%</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section-quick">
+            <div class="quick-actions" id="quickList">
+                <!-- Quick actions will be rendered here -->
+            </div>
+        </div>
+        <div class="voice-bar">
+            <div class="assistant-avatar" id="assistantAvatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="voice-status" id="voiceStatus">Say "Mark breakfast as done" or "Show stats"</div>
+        </div>
+    </div>
+    <!-- Modal for Add/Edit Task -->
+    <div class="modal-bg" id="modalBg">
+        <div class="modal">
+            <h3 id="modalTitle">Add Task</h3>
+            <form id="taskForm">
+                <div id="routineFields" style="display:none;">
+                    <input type="text" id="taskText" placeholder="Task Description">
+                    <input type="time" id="taskTime" placeholder="Time">
+                    <input type="date" id="taskDate" placeholder="Date">
+                    <input type="text" id="taskNumber" placeholder="Phone Number (optional)">
+                </div>
+                <div id="activityFields" style="display:none;">
+                    <label for="activityText">Activity</label>
+                    <input type="text" id="activityText">
+                    <label for="activityProgress">Progress (%)</label>
+                    <input type="number" id="activityProgress" min="0" max="100" value="0">
+                </div>
+                <div id="quickFields" style="display:none;">
+                    <input type="text" id="quickText" placeholder="Quick Action Description">
+                    <input type="time" id="quickTime" placeholder="Time (optional)">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn cancel" onclick="closeTaskModal()">Cancel</button>
+                    <button type="submit" class="modal-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Modal for Add User -->
+    <div class="modal-bg" id="userModalBg">
+        <div class="modal">
+            <h3>Add User</h3>
+            <form id="userForm">
+                <label for="userName">Name</label>
+                <input type="text" id="userName" required>
+                <div id="userImagePreview" style="width:80px;height:80px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;margin:12px auto 16px auto;overflow:hidden;font-size:2em;color:#888;background-size:cover;background-position:center;background-repeat:no-repeat;">
+                    <span id="userImageInitial">?</span>
+                </div>
+                <label for="userImage">Profile Picture</label>
+                <input type="file" id="userImage" accept="image/*">
+                <button type="submit" class="modal-btn">Save</button>
+                <button type="button" class="modal-btn cancel" onclick="closeUserModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <!-- Weather Forecast at the Top -->
+    <div id="weatherForecast" style="width:100%;background:#e6eaff;padding:12px 0 8px 0;text-align:center;font-size:1.1rem;"></div>
+    <script src="https://unpkg.com/@picovoice/porcupine-web-en-worker"></script>
+    <script>
+        // Calendar and Routine Data
+        let selectedDate = new Date().toISOString().slice(0,10);
+        document.getElementById('routineDate').value = selectedDate;
+        document.getElementById('routineDate').addEventListener('change', function() {
+            selectedDate = this.value;
+            renderRoutine();
+        });
+        // Routine data structure: {date: {tasks: [{time, text, done}]}}
+        let routineStore = JSON.parse(localStorage.getItem('routineStore') || '{}');
+        if (!routineStore[selectedDate]) {
+            routineStore[selectedDate] = {
+                tasks: [
+                    { time: '07:00', text: 'Wake up', done: true },
+                    { time: '08:00', text: 'Breakfast', done: false },
+                    { time: '09:00', text: 'School/Work', done: false },
+                    { time: '17:00', text: 'Family dinner', done: false }
+                ]
+            };
+        }
+        function saveRoutineStore() {
+            localStorage.setItem('routineStore', JSON.stringify(routineStore));
+        }
+        function renderRoutine() {
+            if (!routineStore[selectedDate]) routineStore[selectedDate] = {tasks: []};
+            const tasks = routineStore[selectedDate].tasks;
+            const list = document.getElementById('routineList');
+            list.innerHTML = '';
+            tasks.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'routine-item';
+                div.innerHTML = `
+                    <div class="routine-time">${item.time}</div>
+                    <div class="routine-text">${item.text}</div>
+                    <div class="routine-status${item.done ? ' completed' : ''}" onclick="toggleRoutine(${idx})"></div>
+                    <button class="edit-btn" onclick="openTaskModal(${idx})">Edit</button>
+                    <button class="edit-btn" style="background:#f56565;color:white;" onclick="deleteTask(${idx})">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+            updateStats();
+        }
+        function toggleRoutine(idx) {
+            routineStore[selectedDate].tasks[idx].done = !routineStore[selectedDate].tasks[idx].done;
+            saveRoutineStore();
+            renderRoutine();
+        }
+        function updateStats() {
+            const tasks = routineStore[selectedDate].tasks;
+            const completed = tasks.filter(i => i.done).length;
+            const total = tasks.length;
+            document.getElementById('statTasks').textContent = total;
+            document.getElementById('statComplete').textContent = total ? Math.round((completed/total)*100) + '%' : '0%';
+        }
+        renderRoutine();
+        // Activities and Quick Actions Data
+        let activityStore = JSON.parse(localStorage.getItem('activityStore') || '[]');
+        let quickStore = JSON.parse(localStorage.getItem('quickStore') || '[]');
+        function saveActivityStore() {
+            localStorage.setItem('activityStore', JSON.stringify(activityStore));
+        }
+        function saveQuickStore() {
+            localStorage.setItem('quickStore', JSON.stringify(quickStore));
+        }
+        function renderActivities() {
+            const list = document.getElementById('activityList');
+            list.innerHTML = '';
+            activityStore.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'activity-item';
+                div.innerHTML = `
+                    <div class="activity-info">
+                        <div class="activity-icon"><i class="fas fa-heart"></i></div>
+                        <div class="activity-details">${item.text}</div>
+                    </div>
+                    <div class="activity-progress">
+                        <div class="progress-bar" style="width: ${item.progress || 0}%"></div>
+                    </div>
+                    <button class="edit-btn" onclick="openTaskModal(${idx}, 'activity')">Edit</button>
+                    <button class="edit-btn" style="background:#f56565;color:white;" onclick="deleteActivity(${idx})">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+        function renderQuick() {
+            const list = document.getElementById('quickList');
+            list.innerHTML = '';
+            // Add Uber button
+            const uberBtn = document.createElement('button');
+            uberBtn.className = 'quick-action-btn';
+            uberBtn.innerHTML = `<i class="fas fa-taxi"></i> Uber`;
+            uberBtn.onclick = () => window.open('https://m.uber.com/', '_blank');
+            list.appendChild(uberBtn);
+            // Add Slack button
+            const slackBtn = document.createElement('button');
+            slackBtn.className = 'quick-action-btn';
+            slackBtn.innerHTML = `<i class="fab fa-slack"></i> Slack`;
+            slackBtn.onclick = () => window.open('https://slack.com/signin', '_blank');
+            list.appendChild(slackBtn);
+            quickStore.forEach((item, idx) => {
+                const div = document.createElement('button');
+                div.className = 'quick-action-btn';
+                div.innerHTML = `<i class=\"fas fa-bolt\"></i> ${item.text}`;
+                div.onclick = () => alert('Quick Action: ' + item.text);
+                list.appendChild(div);
+                // Add edit/delete for quick actions
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = (e) => { e.stopPropagation(); openTaskModal(idx, 'quick'); };
+                list.appendChild(editBtn);
+                const delBtn = document.createElement('button');
+                delBtn.className = 'edit-btn';
+                delBtn.style.background = '#f56565';
+                delBtn.style.color = 'white';
+                delBtn.textContent = 'Delete';
+                delBtn.onclick = (e) => { e.stopPropagation(); deleteQuick(idx); };
+                list.appendChild(delBtn);
+            });
+        }
+        function deleteActivity(idx) {
+            if (confirm('Delete this activity?')) {
+                activityStore.splice(idx, 1);
+                saveActivityStore();
+                renderActivities();
+            }
+        }
+        function deleteQuick(idx) {
+            if (confirm('Delete this quick action?')) {
+                quickStore.splice(idx, 1);
+                saveQuickStore();
+                renderQuick();
+            }
+        }
+        renderActivities();
+        renderQuick();
+        // Modal for Add/Edit Task/Activity/Quick
+        let editIdx = null;
+        let modalType = 'routine';
+        function openTaskModal(idx, type) {
+            modalType = type || getCurrentTab();
+            document.getElementById('modalBg').classList.add('active');
+            document.getElementById('modalTitle').textContent =
+                modalType === 'routine' ? (idx !== undefined ? 'Edit Task' : 'Add Task') :
+                modalType === 'activity' ? (idx !== undefined ? 'Edit Urgent Call' : 'Add Urgent Call') :
+                'Add Quick Action';
+            // Show/hide fields
+            document.getElementById('routineFields').style.display = modalType === 'routine' ? '' : 'none';
+            document.getElementById('activityFields').style.display = modalType === 'activity' ? '' : 'none';
+            document.getElementById('quickFields').style.display = modalType === 'quick' ? '' : 'none';
+            if (modalType === 'routine') {
+                if (idx !== undefined) {
+                    const task = routineStore[selectedDate].tasks[idx];
+                    document.getElementById('taskText').value = task.text;
+                    document.getElementById('taskTime').value = task.time;
+                    document.getElementById('taskDate').value = selectedDate;
+                    document.getElementById('taskNumber').value = task.number || '';
+                    editIdx = idx;
+                } else {
+                    document.getElementById('taskText').value = '';
+                    document.getElementById('taskTime').value = '';
+                    document.getElementById('taskDate').value = selectedDate;
+                    document.getElementById('taskNumber').value = '';
+                    editIdx = null;
+                }
+            } else if (modalType === 'activity') {
+                if (idx !== undefined) {
+                    const activity = activityStore[idx];
+                    document.getElementById('activityText').value = activity.text;
+                    document.getElementById('activityNumber').value = activity.number || '';
+                    document.getElementById('activityTime').value = activity.time || '';
+                    document.getElementById('activityProgress').value = activity.progress || 0;
+                    editIdx = idx;
+                } else {
+                    document.getElementById('activityText').value = '';
+                    document.getElementById('activityNumber').value = '';
+                    document.getElementById('activityTime').value = '';
+                    document.getElementById('activityProgress').value = 0;
+                    editIdx = null;
+                }
+            } else if (modalType === 'quick') {
+                if (idx !== undefined) {
+                    const quick = quickStore[idx];
+                    document.getElementById('quickText').value = quick.text;
+                    document.getElementById('quickTime').value = quick.time || '';
+                    editIdx = idx;
+                } else {
+                    document.getElementById('quickText').value = '';
+                    document.getElementById('quickTime').value = '';
+                    editIdx = null;
+                }
+            }
+        }
+        function closeTaskModal() {
+            document.getElementById('modalBg').classList.remove('active');
+        }
+        document.getElementById('taskForm').onsubmit = function(e) {
+            e.preventDefault();
+            if (modalType === 'routine') {
+                const text = document.getElementById('taskText').value.trim();
+                const time = document.getElementById('taskTime').value;
+                const date = document.getElementById('taskDate').value;
+                const number = document.getElementById('taskNumber').value.trim();
+                if (!routineStore[date]) routineStore[date] = {tasks: []};
+                if (editIdx !== null) {
+                    routineStore[date].tasks[editIdx] = {text, time, number, done: false};
+                } else {
+                    routineStore[date].tasks.push({text, time, number, done: false});
+                }
+                saveRoutineStore();
+                closeTaskModal();
+                // Always switch to Routine tab and highlight new task
+                showSection('routine');
+                if (date === selectedDate) {
+                    renderRoutine();
+                    setTimeout(() => {
+                        const list = document.getElementById('routineList');
+                        const item = list.children[routineStore[date].tasks.length - 1];
+                        if (item) {
+                            item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            item.style.background = '#fff3cd';
+                            setTimeout(() => { item.style.background = ''; }, 2000);
+                        }
+                    }, 300);
+                }
+                // Confirmation feedback
+                voiceStatus.textContent = 'Task saved!';
+                speakText('Task saved!');
+            } else if (modalType === 'activity') {
+                const text = document.getElementById('activityText').value.trim();
+                const number = document.getElementById('activityNumber').value.trim();
+                const time = document.getElementById('activityTime').value;
+                const progress = parseInt(document.getElementById('activityProgress').value) || 0;
+                if (editIdx !== null) {
+                    activityStore[editIdx] = {text, number, time, progress};
+                } else {
+                    activityStore.push({text, number, time, progress});
+                }
+                saveActivityStore();
+                closeTaskModal();
+                renderActivities();
+                voiceStatus.textContent = 'Urgent call saved!';
+                speakText('Urgent call saved!');
+            } else if (modalType === 'quick') {
+                const text = document.getElementById('quickText').value.trim();
+                const time = document.getElementById('quickTime').value;
+                if (editIdx !== null) {
+                    quickStore[editIdx] = {text, time};
+                } else {
+                    quickStore.push({text, time});
+                }
+                saveQuickStore();
+                closeTaskModal();
+                renderQuick();
+                voiceStatus.textContent = 'Quick action saved!';
+                speakText('Quick action saved!');
+            }
+        };
+        // Show Add button for current tab
+        function getCurrentTab() {
+            if (document.getElementById('nav-routine').classList.contains('active')) return 'routine';
+            if (document.getElementById('nav-activities').classList.contains('active')) return 'activity';
+            if (document.getElementById('nav-quick').classList.contains('active')) return 'quick';
+            return 'routine';
+        }
+        // Always show Add Task button, regardless of tab
+        function updateAddBtn() {
+            const btn = document.getElementById('addBtn');
+            btn.style.display = '';
+            btn.innerHTML = '<i class="fas fa-plus"></i> Add Task';
+        }
+        // Navigation
+        function showSection(section) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('nav-' + section).classList.add('active');
+            document.getElementById('section-' + section).classList.add('active');
+            updateAddBtn();
+        }
+        updateAddBtn();
+        // Voice Integration
+        let recognizing = false;
+        let recognition;
+        const assistantAvatar = document.getElementById('assistantAvatar');
+        const voiceStatus = document.getElementById('voiceStatus');
+        function startRecognition() {
+            if (recognition && !recognizing) {
+                try { recognition.start(); } catch (e) {}
+            }
+        }
+        function stopRecognition() {
+            if (recognition && recognizing) {
+                recognition.stop();
+            }
+        }
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.onstart = function() {
+                recognizing = true;
+                assistantAvatar.classList.add('listening');
+                voiceStatus.textContent = 'Listening...';
+            };
+            recognition.onend = function() {
+                recognizing = false;
+                assistantAvatar.classList.remove('listening');
+                if (voiceStatus.textContent === 'Listening...') voiceStatus.textContent = 'Say a command...';
+            };
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.trim().toLowerCase();
+                handleVoiceCommand(transcript);
+            };
+            // Only listen when avatar is clicked
+            assistantAvatar.onclick = function() {
+                startRecognition();
+            };
+        } else {
+            assistantAvatar.style.opacity = 0.5;
+            voiceStatus.textContent = 'Voice not supported on this browser.';
+        }
+        // --- SARA Context for Intelligence ---
+        let saraContext = {
+            lastAction: null, // e.g., 'add_task', 'remove_task', 'show_task', etc.
+            lastItem: null,   // e.g., {type: 'task', value: 'Homework'}
+        };
+
+        // --- Helper: Find similar items ---
+        function findSimilarItem(query, list, key = 'text') {
+            query = query.toLowerCase();
+            let best = null, bestScore = 0;
+            list.forEach(item => {
+                let score = 0;
+                let val = (item[key] || '').toLowerCase();
+                if (val === query) score = 100;
+                else if (val.includes(query)) score = 80;
+                else if (query.includes(val)) score = 60;
+                else if (val.split(' ').some(w => query.includes(w))) score = 40;
+                if (score > bestScore) { best = item; bestScore = score; }
+            });
+            return bestScore >= 40 ? best : null;
+        }
+
+        function handleVoiceCommand(cmd) {
+            voiceStatus.textContent = 'Heard: "' + cmd + '"';
+            // Only respond if command starts with 'SARA'
+            const saraPattern = /^sara[, ]*/i;
+            if (!saraPattern.test(cmd)) {
+                const msg = 'Please say my name to give a command.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // Remove 'SARA' from the start for further processing
+            cmd = cmd.replace(saraPattern, '');
+            const tasks = routineStore[selectedDate].tasks;
+
+            // --- Contextual follow-up: If last action was add_task and user just says a task ---
+            if (saraContext.lastAction === 'add_task' && /^(\w|\s|:|@|\d)+$/.test(cmd.trim())) {
+                // Try to parse as a task
+                let details = cmd.trim();
+                let text = details;
+                let time = '';
+                let timeMatch = details.match(/(.+) at (\d{1,2}:\d{2})/);
+                if (timeMatch) {
+                    text = timeMatch[1].trim();
+                    time = timeMatch[2];
+                }
+                routineStore[selectedDate].tasks.push({text, time, done: false});
+                saveRoutineStore();
+                renderRoutine();
+                showSection('routine');
+                setTimeout(() => {
+                    const list = document.getElementById('routineList');
+                    const item = list.children[routineStore[selectedDate].tasks.length - 1];
+                    if (item) {
+                        item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        item.style.background = '#fff3cd';
+                        setTimeout(() => { item.style.background = ''; }, 2000);
+                    }
+                }, 300);
+                const msg = `Great! I've added the task '${text}'${time ? ' at ' + time : ''}.`;
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                saraContext.lastAction = null;
+                saraContext.lastItem = {type: 'task', value: text};
+                return;
+            }
+            // --- Contextual follow-up: If last action was show_task and user says 'delete it' ---
+            if (saraContext.lastAction === 'show_task' && /delete it|remove it|mark it as done/.test(cmd.trim())) {
+                if (saraContext.lastItem && saraContext.lastItem.type === 'task') {
+                    let idx = tasks.findIndex(t => t.text.toLowerCase() === saraContext.lastItem.value.toLowerCase());
+                    if (idx !== -1) {
+                        if (/mark it as done/.test(cmd)) {
+                            tasks[idx].done = true;
+                            saveRoutineStore();
+                            renderRoutine();
+                            const msg = `Marked '${tasks[idx].text}' as done.`;
+                            voiceStatus.textContent = msg;
+                            speakText(msg);
+                        } else {
+                            let removed = tasks[idx].text;
+                            tasks.splice(idx, 1);
+                            saveRoutineStore();
+                            renderRoutine();
+                            const msg = `Removed '${removed}'.`;
+                            voiceStatus.textContent = msg;
+                            speakText(msg);
+                        }
+                        saraContext.lastAction = null;
+                        saraContext.lastItem = null;
+                        return;
+                    }
+                }
+            }
+
+            // --- Flexible Add Task Command ---
+            if (/(add|create|schedule) (a )?task/.test(cmd)) {
+                // If details are in the command, extract them
+                let details = cmd.match(/task( called| named|:)? (.+)/i);
+                if (details && details[2]) {
+                    let text = details[2];
+                    let time = '';
+                    let timeMatch = text.match(/(.+) at (\d{1,2}:\d{2})/);
+                    if (timeMatch) {
+                        text = timeMatch[1].trim();
+                        time = timeMatch[2];
+                    }
+                    routineStore[selectedDate].tasks.push({text, time, done: false});
+                    saveRoutineStore();
+                    renderRoutine();
+                    showSection('routine');
+                    setTimeout(() => {
+                        const list = document.getElementById('routineList');
+                        const item = list.children[routineStore[selectedDate].tasks.length - 1];
+                        if (item) {
+                            item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            item.style.background = '#fff3cd';
+                            setTimeout(() => { item.style.background = ''; }, 2000);
+                        }
+                    }, 300);
+                    const msg = `Task '${text}'${time ? ' at ' + time : ''} added!`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    saraContext.lastAction = null;
+                    saraContext.lastItem = {type: 'task', value: text};
+                } else {
+                    // Wait for user to say the task details next
+                    const msg = "What task would you like to add?";
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    saraContext.lastAction = 'add_task';
+                    saraContext.lastItem = null;
+                }
+                return;
+            }
+
+            // --- What's next? / What's left? ---
+            if (/what('?s| is) (my )?(next|upcoming) (task|activity)/.test(cmd) || /what('?s| is) left( to do)?/.test(cmd) || /what do i have to do( today)?/.test(cmd)) {
+                const now = new Date();
+                const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                let nextTask = null;
+                let minDiff = Infinity;
+                for (let i = 0; i < tasks.length; i++) {
+                    if (!tasks[i].done && tasks[i].time) {
+                        const [h, m] = tasks[i].time.split(':').map(Number);
+                        const taskMinutes = h * 60 + m;
+                        if (taskMinutes >= nowMinutes && (taskMinutes - nowMinutes) < minDiff) {
+                            minDiff = taskMinutes - nowMinutes;
+                            nextTask = tasks[i];
+                        }
+                    }
+                }
+                if (nextTask) {
+                    const msg = `Your next task is '${nextTask.text}' at ${nextTask.time}.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    saraContext.lastAction = 'show_task';
+                    saraContext.lastItem = {type: 'task', value: nextTask.text};
+                } else {
+                    // List all incomplete tasks
+                    const incomplete = tasks.filter(t => !t.done);
+                    if (incomplete.length) {
+                        const msg = 'Tasks left: ' + incomplete.map(t => `${t.text}${t.time ? ' at ' + t.time : ''}`).join(', ');
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        saraContext.lastAction = 'show_task';
+                        saraContext.lastItem = {type: 'task', value: incomplete[0].text};
+                    } else {
+                        const msg = 'You have no more tasks for today. Enjoy your free time!';
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        saraContext.lastAction = null;
+                        saraContext.lastItem = null;
+                    }
+                }
+                return;
+            }
+
+            // --- Smart Suggestions for Not Found ---
+            // (Example for remove task)
+            let removeTaskMatch = cmd.match(/remove task:? (.+)/i);
+            if (removeTaskMatch) {
+                let query = removeTaskMatch[1].trim().toLowerCase();
+                let idx = routineStore[selectedDate].tasks.findIndex(t => t.text.toLowerCase().includes(query));
+                if (idx !== -1) {
+                    let removed = routineStore[selectedDate].tasks[idx].text;
+                    routineStore[selectedDate].tasks.splice(idx, 1);
+                    saveRoutineStore();
+                    renderRoutine();
+                    const msg = `Task '${removed}' removed.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    // Try to suggest a similar task
+                    let similar = findSimilarItem(query, routineStore[selectedDate].tasks);
+                    if (similar) {
+                        const msg = `Task not found. Did you mean '${similar.text}'?`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        saraContext.lastAction = 'show_task';
+                        saraContext.lastItem = {type: 'task', value: similar.text};
+                    } else {
+                        const msg = `Task '${removeTaskMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                }
+                return;
+            }
+
+            // --- Tab Switching by Voice ---
+            if (/^(go to|show|open) (the )?routine/.test(cmd)) {
+                showSection('routine');
+                const msg = 'Routine tab opened.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            if (/^(go to|show|open) (the )?activities?/.test(cmd)) {
+                showSection('activities');
+                const msg = 'Activities tab opened.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            if (/^(go to|show|open) (the )?stats?/.test(cmd)) {
+                showSection('stats');
+                const msg = 'Stats tab opened.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            if (/^(go to|show|open) (the )?quick( actions?)?/.test(cmd)) {
+                showSection('quick');
+                const msg = 'Quick actions tab opened.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+
+            // --- Add Activity by Voice ---
+            let addActivityMatch = cmd.match(/add activity:?(.*)/i);
+            if (addActivityMatch) {
+                let details = addActivityMatch[1].trim();
+                let text = details;
+                let progress = 0;
+                // Try to extract progress if mentioned (e.g., 'Yoga 50%')
+                let progressMatch = details.match(/(.+) (\d{1,3})%/);
+                if (progressMatch) {
+                    text = progressMatch[1].trim();
+                    progress = parseInt(progressMatch[2]);
+                }
+                activityStore.push({text, progress});
+                saveActivityStore();
+                renderActivities();
+                showSection('activities');
+                setTimeout(() => {
+                    const list = document.getElementById('activityList');
+                    const item = list.children[activityStore.length - 1];
+                    if (item) {
+                        item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        item.style.background = '#fff3cd';
+                        setTimeout(() => { item.style.background = ''; }, 2000);
+                    }
+                }, 300);
+                const msg = `Activity '${text}' added.`;
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // --- Add Task by Voice ---
+            let addTaskMatch = cmd.match(/add task:?(.*)/i);
+            if (addTaskMatch) {
+                let details = addTaskMatch[1].trim();
+                // Try to extract time (e.g., 'Homework at 8:00')
+                let time = '';
+                let text = details;
+                let timeMatch = details.match(/(.+) at (\d{1,2}:\d{2})/);
+                if (timeMatch) {
+                    text = timeMatch[1].trim();
+                    time = timeMatch[2];
+                }
+                routineStore[selectedDate].tasks.push({text, time, done: false});
+                saveRoutineStore();
+                renderRoutine();
+                showSection('routine');
+                setTimeout(() => {
+                    const list = document.getElementById('routineList');
+                    const item = list.children[routineStore[selectedDate].tasks.length - 1];
+                    if (item) {
+                        item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        item.style.background = '#fff3cd';
+                        setTimeout(() => { item.style.background = ''; }, 2000);
+                    }
+                }, 300);
+                const msg = `Task '${text}' added for ${time || 'today'}.`;
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // --- Add Quick Action by Voice ---
+            let addQuickMatch = cmd.match(/add quick action:?(.*)/i);
+            if (addQuickMatch) {
+                let text = addQuickMatch[1].trim();
+                quickStore.push({text});
+                saveQuickStore();
+                renderQuick();
+                showSection('quick');
+                setTimeout(() => {
+                    const list = document.getElementById('quickList');
+                    const item = list.children[(quickStore.length - 1) * 3];
+                    if (item) {
+                        item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        item.style.background = '#fff3cd';
+                        setTimeout(() => { item.style.background = ''; }, 2000);
+                    }
+                }, 300);
+                const msg = `Quick action '${text}' added.`;
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // --- Add User by Voice ---
+            let addUserMatch = cmd.match(/add user (.+)/i);
+            if (addUserMatch) {
+                let name = addUserMatch[1].trim();
+                if (name) {
+                    userStore.push({name});
+                    saveUserStore();
+                    renderUsers();
+                    const msg = `User '${name}' added.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    const msg = 'Please specify a user name.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            // --- Remove User by Voice ---
+            let removeUserMatch = cmd.match(/remove user (.+)/i);
+            if (removeUserMatch) {
+                let name = removeUserMatch[1].trim().toLowerCase();
+                let idx = userStore.findIndex(u => u.name.toLowerCase() === name);
+                if (idx !== -1) {
+                    userStore.splice(idx, 1);
+                    saveUserStore();
+                    renderUsers();
+                    const msg = `User '${removeUserMatch[1].trim()}' removed.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    const msg = `User '${removeUserMatch[1].trim()}' not found.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            // --- Remove Activity by Voice ---
+            let removeActivityMatch = cmd.match(/remove activity:? (.+)/i);
+            if (removeActivityMatch) {
+                let query = removeActivityMatch[1].trim().toLowerCase();
+                let idx = activityStore.findIndex(a => a.text.toLowerCase().includes(query));
+                if (idx !== -1) {
+                    let removed = activityStore[idx].text;
+                    activityStore.splice(idx, 1);
+                    saveActivityStore();
+                    renderActivities();
+                    const msg = `Activity '${removed}' removed.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    const msg = `Activity '${removeActivityMatch[1].trim()}' not found.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            // --- Remove Quick Action by Voice ---
+            let removeQuickMatch = cmd.match(/remove quick action:? (.+)/i);
+            if (removeQuickMatch) {
+                let query = removeQuickMatch[1].trim().toLowerCase();
+                let idx = quickStore.findIndex(q => q.text.toLowerCase().includes(query));
+                if (idx !== -1) {
+                    let removed = quickStore[idx].text;
+                    quickStore.splice(idx, 1);
+                    saveQuickStore();
+                    renderQuick();
+                    const msg = `Quick action '${removed}' removed.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    const msg = `Quick action '${removeQuickMatch[1].trim()}' not found.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            // --- Take Me To [Task/Activity] by Voice ---
+            let takeToMatch = cmd.match(/(take me to|show me) (.+)/i);
+            if (takeToMatch) {
+                let query = takeToMatch[2].trim().toLowerCase();
+                // Search in today's tasks
+                let found = false;
+                // Routine tasks
+                for (let i = 0; i < tasks.length; i++) {
+                    if (tasks[i].text.toLowerCase().includes(query)) {
+                        showSection('routine');
+                        setTimeout(() => {
+                            const list = document.getElementById('routineList');
+                            const item = list.children[i];
+                            if (item) {
+                                item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                item.style.background = '#fff3cd';
+                                setTimeout(() => { item.style.background = ''; }, 2000);
+                            }
+                        }, 300);
+                        const msg = `Here is '${tasks[i].text}'.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        found = true;
+                        break;
+                    }
+                }
+                // Activities
+                if (!found && activityStore.length > 0) {
+                    for (let i = 0; i < activityStore.length; i++) {
+                        if (activityStore[i].text.toLowerCase().includes(query)) {
+                            showSection('activities');
+                            setTimeout(() => {
+                                const list = document.getElementById('activityList');
+                                const item = list.children[i];
+                                if (item) {
+                                    item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                    item.style.background = '#fff3cd';
+                                    setTimeout(() => { item.style.background = ''; }, 2000);
+                                }
+                            }, 300);
+                            const msg = `Here is activity '${activityStore[i].text}'.`;
+                            voiceStatus.textContent = msg;
+                            speakText(msg);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                // Quick actions
+                if (!found && quickStore.length > 0) {
+                    for (let i = 0; i < quickStore.length; i++) {
+                        if (quickStore[i].text.toLowerCase().includes(query)) {
+                            showSection('quick');
+                            setTimeout(() => {
+                                const list = document.getElementById('quickList');
+                                // Each quick action is a button, followed by edit/delete buttons
+                                // So index is i*3
+                                const item = list.children[i*3];
+                                if (item) {
+                                    item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                    item.style.background = '#fff3cd';
+                                    setTimeout(() => { item.style.background = ''; }, 2000);
+                                }
+                            }, 300);
+                            const msg = `Here is quick action '${quickStore[i].text}'.`;
+                            voiceStatus.textContent = msg;
+                            speakText(msg);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
+                    const msg = `Sorry, I couldn't find '${query}'.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            // SARA, take me to the activities for today
+            if (/sara[, ]*take me to (the )?activities( for today)?/.test(cmd) || /show (me )?(the )?activities( for today)?/.test(cmd)) {
+                showSection('activities');
+                const msg = 'Here are the activities for today.';
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // What's the task for today / What must be done today
+            if (/what('?s| is) (the )?task(s)? for today/.test(cmd) || /what must be done today/.test(cmd)) {
+                const incomplete = tasks.filter(t => !t.done);
+                let msg = '';
+                if (incomplete.length === 0) {
+                    msg = 'All tasks for today are done!';
+                } else {
+                    msg = 'Tasks for today: ' + incomplete.map(t => `${t.text} at ${t.time}`).join(', ');
+                }
+                voiceStatus.textContent = msg;
+                speakText(msg);
+                return;
+            }
+            // Conversational: "SARA, am I late for [task]?"
+            let lateMatch = cmd.match(/(?:sara,?\s*)?am i late for (.+)/);
+            if (lateMatch) {
+                const taskQuery = lateMatch[1].replace('?', '').trim().toLowerCase();
+                let found = false;
+                for (let i = 0; i < tasks.length; i++) {
+                    const taskName = tasks[i].text.toLowerCase();
+                    if (taskQuery.includes(taskName) || taskName.includes(taskQuery)) {
+                        found = true;
+                        if (!tasks[i].time) {
+                            const msg = `I don't know the time for ${tasks[i].text}.`;
+                            voiceStatus.textContent = msg;
+                            speakText(msg);
+                            return;
+                        }
+                        const now = new Date();
+                        const [h, m] = tasks[i].time.split(':').map(Number);
+                        const taskMinutes = h * 60 + m;
+                        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                        let msg;
+                        if (nowMinutes > taskMinutes) {
+                            msg = `Yes, you are late for ${tasks[i].text}.`;
+                        } else {
+                            msg = `No, you are not late for ${tasks[i].text}.`;
+                        }
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        return;
+                    }
+                }
+                if (!found) {
+                    const msg = 'Task not found.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+                return;
+            }
+            if (cmd.includes('mark') && cmd.includes('done')) {
+                for (let i = 0; i < tasks.length; i++) {
+                    if (cmd.includes(tasks[i].text.toLowerCase())) {
+                        tasks[i].done = true;
+                        saveRoutineStore();
+                        renderRoutine();
+                        const msg = `Marked "${tasks[i].text}" as done.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        return;
+                    }
+                }
+                voiceStatus.textContent = 'Task not found.';
+                speakText('Task not found.');
+            } else if ((cmd.includes('what time is') || cmd.includes('when is'))) {
+                // Respond to "what time is [task]" or "when is [task]"
+                let found = false;
+                for (let i = 0; i < tasks.length; i++) {
+                    const taskName = tasks[i].text.toLowerCase();
+                    // Try to match the task name in the command
+                    if (cmd.includes(taskName)) {
+                        const msg = `${tasks[i].text} is at ${tasks[i].time}.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    voiceStatus.textContent = 'Task not found.';
+                    speakText('Task not found.');
+                }
+            } else if (cmd.includes('what') && cmd.includes('next') && (cmd.includes('activity') || cmd.includes('task'))) {
+                // Respond to "what's my next activity/task"
+                const now = new Date();
+                const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                let nextTask = null;
+                let minDiff = Infinity;
+                for (let i = 0; i < tasks.length; i++) {
+                    if (!tasks[i].done && tasks[i].time) {
+                        const [h, m] = tasks[i].time.split(':').map(Number);
+                        const taskMinutes = h * 60 + m;
+                        if (taskMinutes >= nowMinutes && (taskMinutes - nowMinutes) < minDiff) {
+                            minDiff = taskMinutes - nowMinutes;
+                            nextTask = tasks[i];
+                        }
+                    }
+                }
+                if (nextTask) {
+                    const msg = `Your next activity is: ${nextTask.text} at ${nextTask.time}.`;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                } else {
+                    voiceStatus.textContent = 'No more activities for today!';
+                    speakText('No more activities for today!');
+                }
+            } else if (cmd.includes('show stats')) {
+                showSection('stats');
+                voiceStatus.textContent = 'Showing stats.';
+                speakText('Showing stats.');
+            } else if (cmd.includes('show routine')) {
+                showSection('routine');
+                voiceStatus.textContent = 'Showing routine.';
+                speakText('Showing routine.');
+            } else if (cmd.includes('show activities')) {
+                showSection('activities');
+                voiceStatus.textContent = 'Showing activities.';
+                speakText('Showing activities.');
+            } else if (cmd.includes('show quick')) {
+                showSection('quick');
+                voiceStatus.textContent = 'Showing quick actions.';
+                speakText('Showing quick actions.');
+            } else if (cmd.includes('complete all')) {
+                tasks.forEach(i => i.done = true);
+                saveRoutineStore();
+                renderRoutine();
+                voiceStatus.textContent = 'All tasks marked as done.';
+                speakText('All tasks marked as done.');
+            } else if (cmd.includes('go to') && cmd.match(/\d{4}-\d{2}-\d{2}/)) {
+                // e.g. "go to 2024-06-01"
+                const dateMatch = cmd.match(/\d{4}-\d{2}-\d{2}/);
+                if (dateMatch) {
+                    selectedDate = dateMatch[0];
+                    document.getElementById('routineDate').value = selectedDate;
+                    renderRoutine();
+                    const msg = 'Switched to ' + selectedDate;
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                }
+            } else {
+                // --- Edit User by Voice ---
+                let editUserMatch = cmd.match(/edit user (.+) to (.+)/i);
+                if (editUserMatch) {
+                    let oldName = editUserMatch[1].trim().toLowerCase();
+                    let newName = editUserMatch[2].trim();
+                    let idx = userStore.findIndex(u => u.name.toLowerCase() === oldName);
+                    if (idx !== -1) {
+                        userStore[idx].name = newName;
+                        saveUserStore();
+                        renderUsers();
+                        const msg = `User '${editUserMatch[1].trim()}' changed to '${newName}'.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `User '${editUserMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                // --- Edit Task by Voice ---
+                let editTaskMatch = cmd.match(/edit task:? (.+) to (.+)/i);
+                if (editTaskMatch) {
+                    let oldQuery = editTaskMatch[1].trim().toLowerCase();
+                    let newDetails = editTaskMatch[2].trim();
+                    let idx = routineStore[selectedDate].tasks.findIndex(t => t.text.toLowerCase().includes(oldQuery));
+                    if (idx !== -1) {
+                        let text = newDetails;
+                        let time = '';
+                        let timeMatch = newDetails.match(/(.+) at (\d{1,2}:\d{2})/);
+                        if (timeMatch) {
+                            text = timeMatch[1].trim();
+                            time = timeMatch[2];
+                        }
+                        routineStore[selectedDate].tasks[idx] = {text, time, done: false};
+                        saveRoutineStore();
+                        renderRoutine();
+                        const msg = `Task updated to '${text}'${time ? ' at ' + time : ''}.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `Task '${editTaskMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                // --- Edit Activity by Voice ---
+                let editActivityMatch = cmd.match(/edit activity:? (.+) to (.+)/i);
+                if (editActivityMatch) {
+                    let oldQuery = editActivityMatch[1].trim().toLowerCase();
+                    let newDetails = editActivityMatch[2].trim();
+                    let idx = activityStore.findIndex(a => a.text.toLowerCase().includes(oldQuery));
+                    if (idx !== -1) {
+                        let text = newDetails;
+                        let progress = 0;
+                        let progressMatch = newDetails.match(/(.+) (\d{1,3})%/);
+                        if (progressMatch) {
+                            text = progressMatch[1].trim();
+                            progress = parseInt(progressMatch[2]);
+                        }
+                        activityStore[idx] = {text, progress};
+                        saveActivityStore();
+                        renderActivities();
+                        const msg = `Activity updated to '${text}'${progress ? ' at ' + progress + '%' : ''}.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `Activity '${editActivityMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                // --- Edit Quick Action by Voice ---
+                let editQuickMatch = cmd.match(/edit quick action:? (.+) to (.+)/i);
+                if (editQuickMatch) {
+                    let oldQuery = editQuickMatch[1].trim().toLowerCase();
+                    let newText = editQuickMatch[2].trim();
+                    let idx = quickStore.findIndex(q => q.text.toLowerCase().includes(oldQuery));
+                    if (idx !== -1) {
+                        quickStore[idx] = {text: newText};
+                        saveQuickStore();
+                        renderQuick();
+                        const msg = `Quick action updated to '${newText}'.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `Quick action '${editQuickMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                // --- Mark Task as Done/Undone by Voice ---
+                let markDoneMatch = cmd.match(/mark task:? (.+) as done/i);
+                if (markDoneMatch) {
+                    let query = markDoneMatch[1].trim().toLowerCase();
+                    let idx = routineStore[selectedDate].tasks.findIndex(t => t.text.toLowerCase().includes(query));
+                    if (idx !== -1) {
+                        routineStore[selectedDate].tasks[idx].done = true;
+                        saveRoutineStore();
+                        renderRoutine();
+                        const msg = `Marked "${routineStore[selectedDate].tasks[idx].text}" as done.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `Task '${markDoneMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                let markUndoneMatch = cmd.match(/mark task:? (.+) as (not done|undone)/i);
+                if (markUndoneMatch) {
+                    let query = markUndoneMatch[1].trim().toLowerCase();
+                    let idx = routineStore[selectedDate].tasks.findIndex(t => t.text.toLowerCase().includes(query));
+                    if (idx !== -1) {
+                        routineStore[selectedDate].tasks[idx].done = false;
+                        saveRoutineStore();
+                        renderRoutine();
+                        const msg = `Task '${routineStore[selectedDate].tasks[idx].text}' marked as not done.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    } else {
+                        const msg = `Task '${markUndoneMatch[1].trim()}' not found.`;
+                        voiceStatus.textContent = msg;
+                        speakText(msg);
+                    }
+                    return;
+                }
+                // --- List All Items by Voice ---
+                if (/list all tasks/.test(cmd)) {
+                    let msg = routineStore[selectedDate].tasks.length ?
+                        'Tasks: ' + routineStore[selectedDate].tasks.map(t => t.text + (t.time ? ' at ' + t.time : '')).join(', ') :
+                        'No tasks for today.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/list all activities/.test(cmd)) {
+                    let msg = activityStore.length ?
+                        'Activities: ' + activityStore.map(a => a.text + (a.progress ? ' ' + a.progress + '%' : '')).join(', ') :
+                        'No activities.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/list all quick actions/.test(cmd)) {
+                    let msg = quickStore.length ?
+                        'Quick actions: ' + quickStore.map(q => q.text).join(', ') :
+                        'No quick actions.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/list all users/.test(cmd)) {
+                    let msg = userStore.length ?
+                        'Users: ' + userStore.map(u => u.name).join(', ') :
+                        'No users.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                // --- Clear All Items by Voice ---
+                if (/clear all tasks/.test(cmd)) {
+                    routineStore[selectedDate].tasks = [];
+                    saveRoutineStore();
+                    renderRoutine();
+                    const msg = 'All tasks cleared.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/clear all activities/.test(cmd)) {
+                    activityStore = [];
+                    saveActivityStore();
+                    renderActivities();
+                    const msg = 'All activities cleared.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/clear all quick actions/.test(cmd)) {
+                    quickStore = [];
+                    saveQuickStore();
+                    renderQuick();
+                    const msg = 'All quick actions cleared.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                if (/clear all users/.test(cmd)) {
+                    userStore = [];
+                    saveUserStore();
+                    renderUsers();
+                    const msg = 'All users cleared.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                // --- Help Command ---
+                if (/what can you do|help/.test(cmd)) {
+                    const msg = 'I can add, remove, edit, list, and clear tasks, activities, quick actions, and users. You can also ask me to show or go to any item or tab.';
+                    voiceStatus.textContent = msg;
+                    speakText(msg);
+                    return;
+                }
+                // --- Open-ended fallback: Ask Cloud AI ---
+                (async () => {
+                    voiceStatus.textContent = 'Thinking...';
+                    const aiResponse = await askCloudAI(cmd);
+                    voiceStatus.textContent = aiResponse;
+                    speakText(aiResponse);
+                })();
+                return;
+            }
+        }
+        // Task Automation: Mark as done if time has passed
+        // --- Notification and Reminder logic ---
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                function speakWithFemaleVoice() {
+                    const utter = new SpeechSynthesisUtterance(text);
+                    const voices = window.speechSynthesis.getVoices();
+                    // Prefer 'Google US English' or 'Samantha'
+                    let femaleVoice = voices.find(v => v.name === 'Google US English' || v.name === 'Samantha');
+                    if (!femaleVoice) {
+                        // Try to find a voice with 'female', 'woman', or gender property
+                        femaleVoice = voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman') || v.gender === 'female');
+                    }
+                    if (!femaleVoice) {
+                        // Try to find a voice with 'en' and is not 'male'
+                        femaleVoice = voices.find(v => v.lang.startsWith('en') && (!v.gender || v.gender === 'female'));
+                    }
+                    if (femaleVoice) {
+                        utter.voice = femaleVoice;
+                    }
+                    window.speechSynthesis.speak(utter);
+                }
+                // If voices are not loaded yet, wait for them
+                if (window.speechSynthesis.getVoices().length === 0) {
+                    window.speechSynthesis.onvoiceschanged = function() {
+                        speakWithFemaleVoice();
+                    };
+                } else {
+                    speakWithFemaleVoice();
+                }
+            }
+        }
+        // Request notification permission on load
+        if ('Notification' in window && Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+        let lastRemindedTaskTime = null;
+        function autoCompleteTasks() {
+            const now = new Date();
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+            const tasks = routineStore[selectedDate].tasks;
+            let changed = false;
+            tasks.forEach((item, idx) => {
+                if (!item.time) return;
+                const [h, m] = item.time.split(':').map(Number);
+                const itemMinutes = h * 60 + m;
+                // Reminder: if time is now and not done, remind once
+                if (itemMinutes === nowMinutes && !item.done && lastRemindedTaskTime !== item.time) {
+                    const reminderMsg = `Reminder: ${item.text} at ${item.time}`;
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification(reminderMsg);
+                    }
+                    speakText(reminderMsg);
+                    lastRemindedTaskTime = item.time;
+                }
+                // Auto-complete if time has passed
+                if (nowMinutes >= itemMinutes && !item.done) {
+                    item.done = true;
+                    changed = true;
+                }
+            });
+            if (changed) {
+                saveRoutineStore();
+                renderRoutine();
+            }
+        }
+        setInterval(autoCompleteTasks, 60000); // Check every minute
+        autoCompleteTasks();
+        // Modal close on background click
+        document.getElementById('modalBg').onclick = function(e) {
+            if (e.target === this) closeTaskModal();
+        };
+        function deleteTask(idx) {
+            if (confirm('Delete this task?')) {
+                routineStore[selectedDate].tasks.splice(idx, 1);
+                saveRoutineStore();
+                renderRoutine();
+            }
+        }
+        // --- Dynamic Family Members ---
+        let userStore = JSON.parse(localStorage.getItem('userStore') || '[]');
+        function saveUserStore() {
+            localStorage.setItem('userStore', JSON.stringify(userStore));
+        }
+        function renderUsers() {
+            const container = document.getElementById('familyMembers');
+            container.innerHTML = '';
+            userStore.forEach((user, idx) => {
+                const div = document.createElement('div');
+                div.className = 'member';
+                div.innerHTML = `
+                    <div class="member-avatar">${user.image ? `<img src='${user.image}' style='width:100%;height:100%;object-fit:cover;border-radius:50%;'/>` : user.name.charAt(0).toUpperCase()}</div>
+                    <div class="member-name">${user.name}</div>
+                    <button class="edit-btn" style="margin-top:4px;" onclick="removeUser(${idx})">Remove</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function removeUser(idx) {
+            if (confirm('Remove this user?')) {
+                userStore.splice(idx, 1);
+                saveUserStore();
+                renderUsers();
+            }
+        }
+        renderUsers();
+        // Add User Modal logic
+        document.getElementById('addUserBtn').onclick = function() {
+            document.getElementById('userModalBg').classList.add('active');
+            document.getElementById('userName').value = '';
+            document.getElementById('userImage').value = '';
+            document.getElementById('userImagePreview').style.backgroundImage = '';
+            document.getElementById('userImageInitial').textContent = '?';
+            document.getElementById('userImageInitial').style.display = 'block';
+        };
+        function closeUserModal() {
+            document.getElementById('userModalBg').classList.remove('active');
+        }
+        document.getElementById('userForm').onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value.trim();
+            const imageInput = document.getElementById('userImage');
+            if (!name) return;
+            if (imageInput && imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const image = evt.target.result;
+                    userStore.push({name, image});
+                    saveUserStore();
+                    renderUsers();
+                    closeUserModal();
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                userStore.push({name, image: ''});
+                saveUserStore();
+                renderUsers();
+                closeUserModal();
+            }
+        };
+        // Modal close on background click for user modal
+        document.getElementById('userModalBg').onclick = function(e) {
+            if (e.target === this) closeUserModal();
+        };
+        // --- OpenAI GPT Integration for Open-Ended Conversation ---
+        async function askCloudAI(prompt) {
+            const apiKey = 'YOUR_OPENAI_API_KEY'; // <-- Replace with your OpenAI API key
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey
+                },
+                body: JSON.stringify({
+                    model: 'gpt-3.5-turbo',
+                    messages: [{role: 'user', content: prompt}],
+                    max_tokens: 150
+                })
+            });
+            const data = await response.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                return data.choices[0].message.content.trim();
+            } else {
+                return "Sorry, I couldn't get a response from the cloud AI.";
+            }
+        }
+        // --- Porcupine Wake Word Integration for SARA ---
+        let porcupineWorker;
+        let isListening = false;
+        let audioContext, source, processor;
+
+        async function startWakeWord() {
+            porcupineWorker = await PorcupineWebEnWorker.create(
+                'SydkFgvUh1T3hQu4+wyrjpjwxzCchRyicfTw7KOd1Jk',
+                [{ builtin: 'porcupine' }], // Use 'porcupine' for demo, or custom SARA model if you have it
+                keywordCallback
+            );
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                source = audioContext.createMediaStreamSource(stream);
+                processor = audioContext.createScriptProcessor(512, 1, 1);
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+                processor.onaudioprocess = (event) => {
+                    if (porcupineWorker) {
+                        // Convert Float32Array [-1,1] to Int16Array for Porcupine
+                        let input = event.inputBuffer.getChannelData(0);
+                        let int16 = new Int16Array(input.length);
+                        for (let i = 0; i < input.length; i++) {
+                            int16[i] = Math.max(-32768, Math.min(32767, input[i] * 32767));
+                        }
+                        porcupineWorker.postMessage({ command: 'process', inputFrame: int16 });
+                    }
+                };
+            });
+        }
+
+        function keywordCallback(keywordLabel) {
+            // If using a custom SARA model, check for 'SARA' instead of 'porcupine'
+            if ((keywordLabel === 'porcupine' || keywordLabel === 'SARA') && !isListening) {
+                isListening = true;
+                voiceStatus.textContent = 'SARA is listening...';
+                startRecognition();
+                setTimeout(() => { isListening = false; }, 5000); // Prevent immediate retrigger
+            }
+        }
+
+        // Call this once on page load or after user interaction
+        startWakeWord();
+        // --- Automated Daycare Call ---
+        const daycareNumber = '+1234567890'; // Replace with actual daycare number
+        const callHour = 17; // 24-hour format, 17 = 5 PM
+        const callMinute = 0;
+        function checkAndDialDaycare() {
+            const now = new Date();
+            if (now.getHours() === callHour && now.getMinutes() === callMinute) {
+                window.location.href = `tel:${daycareNumber}`;
+            }
+        }
+        setInterval(checkAndDialDaycare, 60000); // Check every minute
+        // --- Automated Class Alarm ---
+        const classHour = 8; // 24-hour format, 8 = 8 AM
+        const classMinute = 0;
+        let classAlarmTriggered = false;
+        function checkAndAlarmForClass() {
+            const now = new Date();
+            if (now.getHours() === classHour && now.getMinutes() === classMinute && !classAlarmTriggered) {
+                classAlarmTriggered = true;
+                // Play a sound (if supported) and show an alert
+                try {
+                    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+                    audio.play();
+                } catch (e) {}
+                alert('It\'s time to go for classes!');
+            }
+            // Reset trigger after the minute passes
+            if (now.getHours() !== classHour || now.getMinutes() !== classMinute) {
+                classAlarmTriggered = false;
+            }
+        }
+        setInterval(checkAndAlarmForClass, 10000); // Check every 10 seconds
+        // --- Automated Task Reminder ---
+        const userName = 'Hamed'; // Optionally, fetch from user profile or input
+        let remindedTasks = {};
+        function checkAndRemindTasks() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const today = now.toISOString().slice(0, 10);
+            if (routineStore[today] && routineStore[today].tasks) {
+                routineStore[today].tasks.forEach((task, idx) => {
+                    if (task.time) {
+                        const [taskHour, taskMinute] = task.time.split(":").map(Number);
+                        const key = `${today}-${idx}`;
+                        if (hour === taskHour && minute === taskMinute) {
+                            if (!remindedTasks[key]) remindedTasks[key] = false;
+                            if (!remindedTasks[key]) {
+                                const message = `Good morning, ${userName}. It's time for: ${task.text}`;
+                                speakText(message);
+                                // Keep showing alert until user clicks OK
+                                alert(message);
+                                remindedTasks[key] = true;
+                            }
+                    } else {
+                            remindedTasks[key] = false;
+                        }
+                    }
+                });
+            }
+        }
+        setInterval(checkAndRemindTasks, 10000); // Check every 10 seconds
+        // --- Draggable Tabs ---
+        const navBar = document.getElementById('navBar');
+        let draggedTab = null;
+        navBar.querySelectorAll('.nav-btn').forEach(tab => {
+            tab.addEventListener('dragstart', function(e) {
+                draggedTab = this;
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            tab.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderLeft = '3px solid #667eea';
+            });
+            tab.addEventListener('dragleave', function(e) {
+                this.style.borderLeft = '';
+            });
+            tab.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderLeft = '';
+                if (draggedTab && draggedTab !== this) {
+                    navBar.insertBefore(draggedTab, this);
+                }
+            });
+            tab.addEventListener('dragend', function(e) {
+                navBar.querySelectorAll('.nav-btn').forEach(t => t.style.borderLeft = '');
+                draggedTab = null;
+            });
+        });
+        // --- Automated Urgent Call Reminder ---
+        let remindedUrgentCalls = {};
+        function checkAndCallUrgent() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            if (activityStore && activityStore.length) {
+                activityStore.forEach((call, idx) => {
+                    if (call.time && call.number) {
+                        const [callHour, callMinute] = call.time.split(":").map(Number);
+                        const key = `urgent-${idx}`;
+                        if (hour === callHour && minute === callMinute && !remindedUrgentCalls[key]) {
+                            remindedUrgentCalls[key] = true;
+                            const message = `Calling ${call.text} at ${call.number}`;
+                            speakText(message);
+                            alert(message);
+                            window.location.href = `tel:${call.number}`;
+                        }
+                        if (hour !== callHour || minute !== callMinute) {
+                            remindedUrgentCalls[key] = false;
+                        }
+                    }
+                });
+            }
+        }
+        setInterval(checkAndCallUrgent, 10000); // Check every 10 seconds
+        // Update image preview on file select
+        document.getElementById('userImage').addEventListener('change', function(e) {
+            const preview = document.getElementById('userImagePreview');
+            const initial = document.getElementById('userImageInitial');
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    preview.style.backgroundImage = `url('${evt.target.result}')`;
+                    initial.style.display = 'none';
+                };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                preview.style.backgroundImage = '';
+                initial.style.display = 'block';
+            }
+        });
+        // Update initial in preview as user types name
+        document.getElementById('userName').addEventListener('input', function(e) {
+            const initial = document.getElementById('userImageInitial');
+            initial.textContent = this.value ? this.value.charAt(0).toUpperCase() : '?';
+        });
+        // --- Automated Uber Redirect ---
+        let remindedUber = {};
+        function checkAndRedirectUber() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            // Check urgent calls for Uber
+            if (activityStore && activityStore.length) {
+                activityStore.forEach((call, idx) => {
+                    if (call.text && call.text.toLowerCase().includes('uber') && call.time) {
+                        const [callHour, callMinute] = call.time.split(":").map(Number);
+                        const key = `uber-activity-${idx}`;
+                        if (hour === callHour && minute === callMinute && !remindedUber[key]) {
+                            remindedUber[key] = true;
+                            const message = `Redirecting to Uber for car pick up.`;
+                            speakText(message);
+                            alert(message);
+                            window.open('https://m.uber.com/', '_blank');
+                        }
+                        if (hour !== callHour || minute !== callMinute) {
+                            remindedUber[key] = false;
+                        }
+                    }
+                });
+            }
+            // Check quick actions for Uber
+            if (quickStore && quickStore.length) {
+                quickStore.forEach((action, idx) => {
+                    if (action.text && action.text.toLowerCase().includes('uber') && action.time) {
+                        const [actionHour, actionMinute] = action.time.split(":").map(Number);
+                        const key = `uber-quick-${idx}`;
+                        if (hour === actionHour && minute === actionMinute && !remindedUber[key]) {
+                            remindedUber[key] = true;
+                            const message = `Redirecting to Uber for car pick up.`;
+                            speakText(message);
+                            alert(message);
+                            window.open('https://m.uber.com/', '_blank');
+                        }
+                        if (hour !== actionHour || minute !== actionMinute) {
+                            remindedUber[key] = false;
+                        }
+                    }
+                });
+            }
+        }
+        setInterval(checkAndRedirectUber, 10000); // Check every 10 seconds
+        // --- Automated Quick Action Reminders for Uber and Slack ---
+        let remindedQuickApps = {};
+        function checkAndRemindQuickApps() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            if (quickStore && quickStore.length) {
+                quickStore.forEach((action, idx) => {
+                    if (action.text && action.time) {
+                        const [actionHour, actionMinute] = action.time.split(":").map(Number);
+                        const key = `quickapp-${idx}`;
+                        if (hour === actionHour && minute === actionMinute && !remindedQuickApps[key]) {
+                            remindedQuickApps[key] = true;
+                            if (action.text.toLowerCase().includes('uber')) {
+                                speakText('Time for your Uber ride!');
+                                alert('Time for your Uber ride!');
+                                window.open('https://m.uber.com/', '_blank');
+                            } else if (action.text.toLowerCase().includes('slack')) {
+                                speakText('Time to check your Slack messages!');
+                                alert('Time to check your Slack messages!');
+                                window.open('https://slack.com/signin', '_blank');
+                            }
+                        }
+                        if (hour !== actionHour || minute !== actionMinute) {
+                            remindedQuickApps[key] = false;
+                        }
+                    }
+                });
+            }
+        }
+        setInterval(checkAndRemindQuickApps, 10000); // Check every 10 seconds
+    </script>
+</body>
+</html> 

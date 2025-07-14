@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400, initial-scale=1.0">
+    <title>Family Routine Widget</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        body {
+            width: 400px;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        .widget-container {
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 10px 0 10px 0;
+        }
+        .widget-header {
+            background: #667eea;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 12px 0 10px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .widget-section {
+            background: #fff;
+            border-radius: 10px;
+            margin: 0 10px 12px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 12px 10px 10px 10px;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .family-members {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .member {
+            text-align: center;
+            flex: 1;
+        }
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2px auto;
+        }
+        .member-name {
+            font-size: 0.8rem;
+            color: #2d3748;
+        }
+        .routine-list {
+            margin-bottom: 0;
+        }
+        .routine-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .routine-item:last-child {
+            border-bottom: none;
+        }
+        .routine-time {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+            min-width: 40px;
+            text-align: center;
+        }
+        .routine-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .routine-status {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        .routine-status.completed {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+        .activity-list {
+            margin-bottom: 0;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+        }
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .activity-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .activity-details {
+            font-size: 0.85rem;
+            color: #2d3748;
+        }
+        .activity-progress {
+            width: 40px;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #667eea;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #718096;
+        }
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .quick-action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            flex: 1 1 45%;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        .quick-action-btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container">
+        <div class="widget-header">
+            <i class="fas fa-home"></i> Family Routine
+        </div>
+        <div class="widget-section">
+            <div class="section-title"><i class="fas fa-users"></i> Family</div>
+            <div class="family-members">
+                <div class="member">
+                    <div class="member-avatar">M</div>
+                    <div class="member-name">Mom</div>
+                </div>
+                <div class="member">
+                    <div class="member-avatar">D</div>
+                    <div class="member-name">Dad</div>
+                </div>
+                <div class="member">
+                    <div class="member-avatar">S</div>
+                    <div class="member-name">Sarah</div>
+                </div>
+                <div class="member">
+                    <div class="member-avatar">J</div>
+                    <div class="member-name">John</div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-section">
+            <div class="section-title"><i class="fas fa-clock"></i> Today's Routine</div>
+            <div class="routine-list">
+                <div class="routine-item">
+                    <div class="routine-time">7:00</div>
+                    <div class="routine-text">Wake up</div>
+                    <div class="routine-status completed" onclick="toggleStatus(this)"></div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-time">8:00</div>
+                    <div class="routine-text">Breakfast</div>
+                    <div class="routine-status" onclick="toggleStatus(this)"></div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-time">9:00</div>
+                    <div class="routine-text">School/Work</div>
+                    <div class="routine-status" onclick="toggleStatus(this)"></div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-time">17:00</div>
+                    <div class="routine-text">Family dinner</div>
+                    <div class="routine-status" onclick="toggleStatus(this)"></div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-section">
+            <div class="section-title"><i class="fas fa-heart"></i> Activities</div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="activity-details">Cooking</div>
+                    </div>
+                    <div class="activity-progress">
+                        <div class="progress-bar" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="activity-details">Game Night</div>
+                    </div>
+                    <div class="activity-progress">
+                        <div class="progress-bar" style="width: 60%"></div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-icon"><i class="fas fa-hiking"></i></div>
+                        <div class="activity-details">Hiking</div>
+                    </div>
+                    <div class="activity-progress">
+                        <div class="progress-bar" style="width: 90%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-section">
+            <div class="section-title"><i class="fas fa-chart-bar"></i> Stats</div>
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Members</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">75%</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+            </div>
+        </div>
+        <div class="widget-section">
+            <div class="section-title"><i class="fas fa-bolt"></i> Quick Actions</div>
+            <div class="quick-actions">
+                <button class="quick-action-btn"><i class="fas fa-shopping-cart"></i> Shop</button>
+                <button class="quick-action-btn"><i class="fas fa-broom"></i> Chores</button>
+                <button class="quick-action-btn"><i class="fas fa-utensils"></i> Meals</button>
+                <button class="quick-action-btn"><i class="fas fa-wallet"></i> Budget</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleStatus(element) {
+            element.classList.toggle('completed');
+            updateStats();
+        }
+        function updateStats() {
+            const completedTasks = document.querySelectorAll('.routine-status.completed').length;
+            const totalTasks = document.querySelectorAll('.routine-status').length;
+            const completionRate = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            document.querySelectorAll('.stat')[2].querySelector('.stat-number').textContent = completionRate + '%';
+        }
+        updateStats();
+    </script>
+</body>
+</html> 

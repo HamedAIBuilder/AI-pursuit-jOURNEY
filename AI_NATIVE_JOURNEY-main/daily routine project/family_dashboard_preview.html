@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Dashboard Project Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: #667eea;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .preview-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .preview-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .preview-content {
+            padding: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .mockup-section {
+            background: #f1f3f4;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .mockup-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .mockup-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .mockup-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .mockup-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .mockup-item:last-child {
+            border-bottom: none;
+        }
+
+        .mockup-time {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .mockup-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .mockup-status {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+        }
+
+        .mockup-status.completed {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+
+        .family-members-mockup {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .member-mockup {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .member-avatar-mockup {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .member-name-mockup {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+
+        .member-role-mockup {
+            font-size: 0.7rem;
+            color: #718096;
+        }
+
+        .stats-mockup {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-mockup {
+            text-align: center;
+            padding: 20px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .stat-number-mockup {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label-mockup {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .tech-stack {
+            background: #2d3748;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .tech-stack h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .tech-list {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 40px;
+            background: #667eea;
+            color: white;
+        }
+
+        .cta-button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .family-members-mockup {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-mockup {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1>🏠 Family Routine Dashboard</h1>
+            <p>A comprehensive web application for organizing family life</p>
+        </div>
+
+        <div class="preview-content">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Family Member Management</div>
+                    <div class="feature-description">
+                        Add and manage family members with roles and avatars. 
+                        Keep track of everyone's activities and responsibilities.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <div class="feature-title">Daily Routines</div>
+                    <div class="feature-description">
+                        Create and track daily routines with time-based tasks. 
+                        Mark tasks as completed and monitor progress.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <div class="feature-title">Weekly Schedule</div>
+                    <div class="feature-description">
+                        Plan weekly activities and events. 
+                        Visual calendar view for easy scheduling.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">Family Activities</div>
+                    <div class="feature-description">
+                        Track family bonding activities and hobbies. 
+                        Monitor progress and completion rates.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Family Statistics</div>
+                    <div class="feature-description">
+                        View family statistics and completion rates. 
+                        Track productivity and family engagement.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Quick Actions</div>
+                    <div class="feature-description">
+                        Quick access to shopping lists, chores, 
+                        meal planning, and budget management.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-section">
+                <div class="mockup-title">📱 Dashboard Preview</div>
+                
+                <div class="mockup-grid">
+                    <div class="mockup-card">
+                        <h4>👥 Family Members</h4>
+                        <div class="family-members-mockup">
+                            <div class="member-mockup">
+                                <div class="member-avatar-mockup">M</div>
+                                <div class="member-name-mockup">Mom</div>
+                                <div class="member-role-mockup">Parent</div>
+                            </div>
+                            <div class="member-mockup">
+                                <div class="member-avatar-mockup">D</div>
+                                <div class="member-name-mockup">Dad</div>
+                                <div class="member-role-mockup">Parent</div>
+                            </div>
+                            <div class="member-mockup">
+                                <div class="member-avatar-mockup">S</div>
+                                <div class="member-name-mockup">Sarah</div>
+                                <div class="member-role-mockup">Child</div>
+                            </div>
+                            <div class="member-mockup">
+                                <div class="member-avatar-mockup">J</div>
+                                <div class="member-name-mockup">John</div>
+                                <div class="member-role-mockup">Child</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mockup-card">
+                        <h4>⏰ Today's Routine</h4>
+                        <div class="mockup-item">
+                            <div class="mockup-time">7:00</div>
+                            <div class="mockup-text">Wake up & get ready</div>
+                            <div class="mockup-status completed"></div>
+                        </div>
+                        <div class="mockup-item">
+                            <div class="mockup-time">8:00</div>
+                            <div class="mockup-text">Breakfast together</div>
+                            <div class="mockup-status completed"></div>
+                        </div>
+                        <div class="mockup-item">
+                            <div class="mockup-time">9:00</div>
+                            <div class="mockup-text">School/Work</div>
+                            <div class="mockup-status"></div>
+                        </div>
+                        <div class="mockup-item">
+                            <div class="mockup-time">17:00</div>
+                            <div class="mockup-text">Family dinner</div>
+                            <div class="mockup-status"></div>
+                        </div>
+                    </div>
+
+                    <div class="mockup-card">
+                        <h4>📊 Family Stats</h4>
+                        <div class="stats-mockup">
+                            <div class="stat-mockup">
+                                <div class="stat-number-mockup">4</div>
+                                <div class="stat-label-mockup">Members</div>
+                            </div>
+                            <div class="stat-mockup">
+                                <div class="stat-number-mockup">6</div>
+                                <div class="stat-label-mockup">Tasks</div>
+                            </div>
+                            <div class="stat-mockup">
+                                <div class="stat-number-mockup">85%</div>
+                                <div class="stat-label-mockup">Complete</div>
+                            </div>
+                            <div class="stat-mockup">
+                                <div class="stat-number-mockup">3</div>
+                                <div class="stat-label-mockup">Activities</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <h3>🛠️ Technology Stack</h3>
+                <div class="tech-list">
+                    <div class="tech-item">HTML5</div>
+                    <div class="tech-item">CSS3</div>
+                    <div class="tech-item">JavaScript</div>
+                    <div class="tech-item">Font Awesome Icons</div>
+                    <div class="tech-item">Responsive Design</div>
+                    <div class="tech-item">Modern UI/UX</div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2>Ready to organize your family life?</h2>
+                <p>Start using the Family Routine Dashboard today and bring harmony to your daily family activities.</p>
+                <a href="family_routine_dashboard.html" class="cta-button">🚀 Launch Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Routine Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 12px;
+            color: #667eea;
+        }
+
+        .card-header h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .family-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .member {
+            text-align: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .member:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .routine-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .routine-time {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 15px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .routine-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .routine-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .routine-status.completed {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-column {
+            text-align: center;
+        }
+
+        .day-header {
+            background: #667eea;
+            color: white;
+            padding: 10px 5px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .day-event {
+            background: #edf2f7;
+            padding: 8px 5px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            border-left: 3px solid #667eea;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .activity-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            font-size: 1.1rem;
+        }
+
+        .activity-details h4 {
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .activity-details p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .activity-progress {
+            width: 60px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #667eea;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: #667eea;
+            color: white;
+            border-radius: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .add-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .add-button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            min-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-home"></i> Family Routine Dashboard</h1>
+            <p>Organize your family's daily activities and stay connected</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Family Members Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-users"></i>
+                    <h3>Family Members</h3>
+                </div>
+                <div class="family-members">
+                    <div class="member">
+                        <div class="member-avatar">M</div>
+                        <div class="member-name">Mom</div>
+                        <div class="member-role">Parent</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-avatar">D</div>
+                        <div class="member-name">Dad</div>
+                        <div class="member-role">Parent</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-avatar">S</div>
+                        <div class="member-name">Sarah</div>
+                        <div class="member-role">Child</div>
+                    </div>
+                    <div class="member">
+                        <div class="member-avatar">J</div>
+                        <div class="member-name">John</div>
+                        <div class="member-role">Child</div>
+                    </div>
+                </div>
+                <button class="add-button" onclick="openModal('member')">
+                    <i class="fas fa-plus"></i> Add Member
+                </button>
+            </div>
+
+            <!-- Daily Routine Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Today's Routine</h3>
+                </div>
+                <div id="routineList">
+                    <div class="routine-item">
+                        <div class="routine-time">7:00</div>
+                        <div class="routine-text">Wake up & get ready</div>
+                        <div class="routine-status completed" onclick="toggleStatus(this)"></div>
+                    </div>
+                    <div class="routine-item">
+                        <div class="routine-time">8:00</div>
+                        <div class="routine-text">Breakfast together</div>
+                        <div class="routine-status" onclick="toggleStatus(this)"></div>
+                    </div>
+                    <div class="routine-item">
+                        <div class="routine-time">9:00</div>
+                        <div class="routine-text">School/Work</div>
+                        <div class="routine-status" onclick="toggleStatus(this)"></div>
+                    </div>
+                    <div class="routine-item">
+                        <div class="routine-time">12:00</div>
+                        <div class="routine-text">Lunch break</div>
+                        <div class="routine-status" onclick="toggleStatus(this)"></div>
+                    </div>
+                    <div class="routine-item">
+                        <div class="routine-time">17:00</div>
+                        <div class="routine-text">Family dinner</div>
+                        <div class="routine-status" onclick="toggleStatus(this)"></div>
+                    </div>
+                    <div class="routine-item">
+                        <div class="routine-time">20:00</div>
+                        <div class="routine-text">Bedtime routine</div>
+                        <div class="routine-status" onclick="toggleStatus(this)"></div>
+                    </div>
+                </div>
+                <button class="add-button" onclick="openModal('routine')">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
+            </div>
+
+            <!-- Weekly Schedule Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-calendar-week"></i>
+                    <h3>Weekly Schedule</h3>
+                </div>
+                <div class="schedule-grid">
+                    <div class="day-column">
+                        <div class="day-header">Mon</div>
+                        <div class="day-event">School</div>
+                        <div class="day-event">Soccer</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Tue</div>
+                        <div class="day-event">School</div>
+                        <div class="day-event">Piano</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Wed</div>
+                        <div class="day-event">School</div>
+                        <div class="day-event">Library</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Thu</div>
+                        <div class="day-event">School</div>
+                        <div class="day-event">Art Class</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Fri</div>
+                        <div class="day-event">School</div>
+                        <div class="day-event">Movie Night</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Sat</div>
+                        <div class="day-event">Park</div>
+                        <div class="day-event">Shopping</div>
+                    </div>
+                    <div class="day-column">
+                        <div class="day-header">Sun</div>
+                        <div class="day-event">Church</div>
+                        <div class="day-event">Family Time</div>
+                    </div>
+                </div>
+                <button class="add-button" onclick="openModal('schedule')">
+                    <i class="fas fa-plus"></i> Add Event
+                </button>
+            </div>
+
+            <!-- Family Activities Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-heart"></i>
+                    <h3>Family Activities</h3>
+                </div>
+                <div id="activitiesList">
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Cooking Together</h4>
+                                <p>Weekly family cooking session</p>
+                            </div>
+                        </div>
+                        <div class="activity-progress">
+                            <div class="progress-bar" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Game Night</h4>
+                                <p>Board games and fun</p>
+                            </div>
+                        </div>
+                        <div class="activity-progress">
+                            <div class="progress-bar" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-icon">
+                                <i class="fas fa-hiking"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Weekend Hiking</h4>
+                                <p>Nature exploration</p>
+                            </div>
+                        </div>
+                        <div class="activity-progress">
+                            <div class="progress-bar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-button" onclick="openModal('activity')">
+                    <i class="fas fa-plus"></i> Add Activity
+                </button>
+            </div>
+
+            <!-- Family Stats Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Family Stats</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Family Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Daily Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">85%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Activities</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Quick Actions</h3>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <button class="add-button" onclick="openModal('shopping')">
+                        <i class="fas fa-shopping-cart"></i> Shopping List
+                    </button>
+                    <button class="add-button" onclick="openModal('chores')">
+                        <i class="fas fa-broom"></i> Chores
+                    </button>
+                    <button class="add-button" onclick="openModal('meals')">
+                        <i class="fas fa-utensils"></i> Meal Plan
+                    </button>
+                    <button class="add-button" onclick="openModal('budget')">
+                        <i class="fas fa-wallet"></i> Budget
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Item</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="modalForm">
+                <div class="form-group">
+                    <label for="itemName">Name/Title</label>
+                    <input type="text" id="itemName" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">Description</label>
+                    <textarea id="itemDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="itemTime">Time (for routines/schedules)</label>
+                    <input type="time" id="itemTime">
+                </div>
+                <div class="form-group">
+                    <label for="itemType">Type</label>
+                    <select id="itemType">
+                        <option value="task">Task</option>
+                        <option value="event">Event</option>
+                        <option value="activity">Activity</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Add Item</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentModalType = '';
+
+        function toggleStatus(element) {
+            element.classList.toggle('completed');
+            updateStats();
+        }
+
+        function openModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            
+            switch(type) {
+                case 'member':
+                    title.textContent = 'Add Family Member';
+                    break;
+                case 'routine':
+                    title.textContent = 'Add Routine Task';
+                    break;
+                case 'schedule':
+                    title.textContent = 'Add Schedule Event';
+                    break;
+                case 'activity':
+                    title.textContent = 'Add Family Activity';
+                    break;
+                case 'shopping':
+                    title.textContent = 'Shopping List';
+                    break;
+                case 'chores':
+                    title.textContent = 'Chores List';
+                    break;
+                case 'meals':
+                    title.textContent = 'Meal Planning';
+                    break;
+                case 'budget':
+                    title.textContent = 'Family Budget';
+                    break;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('modalForm').reset();
+        }
+
+        function updateStats() {
+            const completedTasks = document.querySelectorAll('.routine-status.completed').length;
+            const totalTasks = document.querySelectorAll('.routine-status').length;
+            const completionRate = Math.round((completedTasks / totalTasks) * 100);
+            
+            document.querySelector('.stat-card:nth-child(2) .stat-number').textContent = totalTasks;
+            document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = completionRate + '%';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Form submission
+        document.getElementById('modalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('itemName').value;
+            const description = document.getElementById('itemDescription').value;
+            const time = document.getElementById('itemTime').value;
+            const type = document.getElementById('itemType').value;
+            
+            // Here you would typically save to a database
+            console.log('Adding new item:', { name, description, time, type, modalType: currentModalType });
+            
+            // For demo purposes, just close the modal
+            closeModal();
+            
+            // Show a simple alert (in a real app, you'd update the UI)
+            alert('Item added successfully!');
+        });
+
+        // Initialize stats
+        updateStats();
+
+        // Add some interactivity to family members
+        document.querySelectorAll('.member').forEach(member => {
+            member.addEventListener('click', function() {
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+
+        // Add hover effects to activity items
+        document.querySelectorAll('.activity-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body>
+</html> 
